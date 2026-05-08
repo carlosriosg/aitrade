@@ -33,6 +33,9 @@ body {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 0 18px;
 }
 
 #particle-canvas {
@@ -46,97 +49,23 @@ body {
 .hero {
   position: relative;
   z-index: 1;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 80px 28px 40px;
+  width: min(100%, 560px);
   display: grid;
-  gap: 40px;
+  place-items: center;
+  padding: 40px 0;
 }
 
-.brand {
-  display: inline-flex;
-  align-items: center;
-  padding: 12px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 28px;
-  backdrop-filter: blur(18px);
-  background: rgba(10, 18, 33, 0.7);
-}
-
-.brand-logo {
-  height: 52px;
-  width: auto;
+.hero-logo {
+  max-width: 100%;
+  width: 420px;
+  height: auto;
   display: block;
 }
 
-.hero-content {
-  max-width: 720px;
-}
 
-.hero-content h1 {
-  margin: 0;
-  font-size: clamp(2.6rem, 5vw, 4.5rem);
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-}
-
-.hero-content p {
-  margin: 28px 0 0;
-  max-width: 620px;
-  color: var(--muted);
-  font-size: 1.05rem;
-  line-height: 1.9;
-}
-
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 32px;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 52px;
-  padding: 0 26px;
-  border-radius: 999px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-}
-
-.btn-primary {
-  color: #06172c;
-  background: linear-gradient(135deg, #3bd0ff, #60c2ff);
-  box-shadow: 0 20px 40px rgba(58, 210, 255, 0.22);
-}
-
-.btn-secondary {
-  color: var(--text);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.hero-content p {
-  margin: 18px 0 0;
-  max-width: 560px;
-  color: var(--muted);
-  font-size: 1.05rem;
-  line-height: 1.9;
-}
 
 @media (max-width: 768px) {
   .hero {
     padding-top: 60px;
-  }
-  .cta-card {
-    flex-direction: column;
-    align-items: stretch;
   }
 }

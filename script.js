@@ -1,7 +1,8 @@
 const canvas = document.getElementById('particle-canvas');
 const context = canvas.getContext('2d');
 const particles = [];
-const particleCount = 120;
+const particleCount = 400;
+const mouse = { x: null, y: null, moved: false };
 
 const resizeCanvas = () => {
   canvas.width = window.innerWidth;
@@ -16,33 +17,40 @@ class Particle {
   reset() {
     this.x = Math.random() * canvas.width;
     this.y = Math.random() * canvas.height;
-    this.size = 1 + Math.random() * 2.5;
-    this.speed = 0.33 + Math.random() * 0.8;
-    this.alpha = 0.2 + Math.random() * 0.3;
-    this.angle = Math.random() * Math.PI * 2;
-    this.length = 24 + Math.random() * 20;
-    this.velocity = Math.random() * 0.6 - 0.3;
+    this.size = 1 + Math.random() * 2;
+    this.vx = (Math.random() - 0.5) * 0.65;
+    this.vy = (Math.random() - 0.5) * 0.65;
+    this.alpha = 0.18 + Math.random() * 0.28;
   }
 
   update() {
-    this.angle += this.velocity * 0.005;
-    this.x += Math.cos(this.angle) * this.speed;
-    this.y += Math.sin(this.angle) * this.speed;
+    if (mouse.moved) {
+      const dx = this.x - mouse.x;
+      const dy = this.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const maxDist = 180;
+      if (dist < maxDist && dist > 1) {
+        const force = (maxDist - dist) / maxDist;
+        this.vx += (dx / dist) * force * 0.14;
+        this.vy += (dy / dist) * force * 0.14;
+      }
+    }
 
-    if (this.x < -50 || this.x > canvas.width + 50 || this.y < -50 || this.y > canvas.height + 50) {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vx *= 0.96;
+    this.vy *= 0.96;
+
+    if (this.x < -20 || this.x > canvas.width + 20 || this.y < -20 || this.y > canvas.height + 20) {
       this.reset();
-      this.y = Math.random() * canvas.height;
       this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
     }
   }
 
   draw() {
-    context.save();
-    context.translate(this.x, this.y);
-    context.rotate(this.angle);
     context.fillStyle = `rgba(75, 212, 255, ${this.alpha})`;
-    context.fillRect(0, 0, this.length, this.size);
-    context.restore();
+    context.fillRect(this.x, this.y, this.size, this.size);
   }
 }
 
@@ -71,6 +79,29 @@ window.addEventListener('resize', () => {
   initParticles();
 });
 
+window.addEventListener('mousemove', (event) => {
+  mouse.x = event.clientX;
+  mouse.y = event.clientY;
+  mouse.moved = true;
+});
+
+window.addEventListener('mouseleave', () => {
+  mouse.moved = false;
+});
+
 resizeCanvas();
 initParticles();
 animate();
+
+// Logo hover effect
+const logo = document.querySelector('.hero-logo');
+logo.addEventListener('mouseover', () => {
+  logo.style.filter = 'drop-shadow(0 0 20px rgba(75, 212, 255, 0.8)) brightness(1.2)';
+  logo.style.transform = 'scale(1.05)';
+  logo.style.transition = 'all 0.8s ease';
+});
+
+logo.addEventListener('mouseout', () => {
+  logo.style.filter = '';
+  logo.style.transform = '';
+});
