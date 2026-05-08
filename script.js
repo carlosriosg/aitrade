@@ -1,7 +1,7 @@
 const canvas = document.getElementById('particle-canvas');
 const context = canvas.getContext('2d');
 const particles = [];
-const particleCount = 400;
+const particleCount = 600;
 const mouse = { x: null, y: null, moved: false };
 
 const resizeCanvas = () => {
@@ -15,8 +15,10 @@ class Particle {
   }
 
   reset() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
+    this.homeX = Math.random() * canvas.width;
+    this.homeY = Math.random() * canvas.height;
+    this.x = this.homeX;
+    this.y = this.homeY;
     this.size = 1 + Math.random() * 2;
     this.vx = (Math.random() - 0.5) * 0.65;
     this.vy = (Math.random() - 0.5) * 0.65;
@@ -24,6 +26,12 @@ class Particle {
   }
 
   update() {
+    // Fuerza suave hacia home
+    const dxHome = this.homeX - this.x;
+    const dyHome = this.homeY - this.y;
+    this.vx += dxHome * 0.00005; // Fuerza muy pequeña para movimiento orgánico
+    this.vy += dyHome * 0.00005;
+
     if (mouse.moved) {
       const dx = this.x - mouse.x;
       const dy = this.y - mouse.y;
@@ -41,10 +49,20 @@ class Particle {
     this.vx *= 0.96;
     this.vy *= 0.96;
 
-    if (this.x < -20 || this.x > canvas.width + 20 || this.y < -20 || this.y > canvas.height + 20) {
-      this.reset();
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
+    // Rebote en los bordes en lugar de resetear
+    if (this.x < 0) {
+      this.x = 0;
+      this.vx = -this.vx * 0.8; // Amortiguar un poco
+    } else if (this.x > canvas.width) {
+      this.x = canvas.width;
+      this.vx = -this.vx * 0.8;
+    }
+    if (this.y < 0) {
+      this.y = 0;
+      this.vy = -this.vy * 0.8;
+    } else if (this.y > canvas.height) {
+      this.y = canvas.height;
+      this.vy = -this.vy * 0.8;
     }
   }
 
